@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>注册</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: url(http://pic1.win4000.com/wallpaper/2017-11-11/5a06c48866f05.jpg);
+            background-size: cover;
+            
+        }
+
+        h1,
+        h2 {
+            font-weight: bold;
+        }
+
+        .bottom {
+            float: none;
+            display: block;
+            vertical-align: bottom;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container-fluid my-3 px-2">
+            <div class="row">
+                <div class="col-lg-5 offset-lg-1 col-sm-6 text-lg-left text-center text-light">
+                    <h1>新用户注册</h1>
+                </div>
+
+                <div class="col-lg-5  col-sm-6 text-lg-right text-center text-light">
+                    <h2>加入我们 UPCOMING</h2>
+                </div>
+            </div>
+            <hr size="3" color="white">
+        </div>
+
+        <main>
+            <form action="/adduser" method="get">
+            <div class="container-fluid my-3 py-5 text-light">
+                <div class="row py-1 ">
+                    <div class="col-lg-4 offset-lg-1 col-md-7  col-sm-12">
+                        <label for="">账号</label>
+                        <div class="form-group">
+                            <input type="text" maxlength="8" minlength="1" class="form-control" name="username"
+                                v-model="username" placeholder="1-8个字符" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row py-2">
+                    <div class="col-lg-4 offset-lg-1 col-md-7  col-sm-12">
+                        <label for="">密码</label>
+                        <div class="form-group ">
+                            <input type="password" minlength="1" maxlength="20" class="form-control" name="password"
+                                v-model="password" placeholder="请输入密码1-20位字母或数字"
+                                onKeyUp="value=value.replace(/[\W]/g,'')" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-lg-4 offset-lg-1 col-md-7  col-sm-12">
+                        <label for="">确认密码</label>
+                        <div class="form-group ">
+                            <input type="password" minlength="1" maxlength="20" class="form-control" name="password"
+                                v-model="password2" placeholder="重复输入密码" onKeyUp="value=value.replace(/[\W]/g,'')"
+                                required>
+                            <span v-if="checkPwd()" style="color: red">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2 offset-lg-1 col-md-4  col-sm-12">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">注册</button>
+
+                    </div>
+
+                </div>
+                <div style="color:red"><span th:text="${session.error}"></span></div>
+            </div>
+        </form>
+        </main>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+
+                //登录头像
+                circleUrl: '',
+                //用户id,昵称，密码
+                username: '',
+                password: '',
+                password2: '',
+                error: '',
+            },
+            mounted: function () {
+
+            },
+            methods: {
+                checkPwd: function () {
+                    if (this.password2 != '' && (this.password != this.password2)) {
+                        this.error = '密码不一致，请重新输入！';
+                        return true;
+                    }
+                },
+                createUser: function () {
+                    console.log(this.username + " " + this.password);
+                    axios.post('/adduser', {
+                        username: this.username,
+                        password: this.password,
+                    })
+                    .then(res => {
+                       /*  console.log(res);
+                        if (res.data == 'ok') {
+                             alert('注册成功');
+                             //成功后跳转首页  
+                        } else {
+                             alert('注册失败，用户已存在');
+                        } */
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('注册失败，请核对信息2');
+                    })
+                },
+            },
+        });
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

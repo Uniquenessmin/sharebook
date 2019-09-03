@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>共享书屋</title>
+</head>
+<body>
+    <div id="app">
+    <h1>search.html</h1>
+    <div v-for="book in books" >
+            <img :src="'/'+book.book_icon" style="width: 170px;height:200px;" /> 
+            <span>书名：《 {{book.book_name}} 》</span><br>
+            <span>作者：{{book.book_author}}</span><br>
+            <!-- <span v-if="'4'==book.category">分类：科技</span> -->
+            <span>分类：{{book.category}}</span><br>
+            <span>ISBN：{{book.book_id}}</span><br>
+            <span>上传者：{{book.sharer}}</span><br><br> 
+    </div>
+</div>
+
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      books:[],
+      
+      // 搜索内容
+      input: '',
+      //用户!!!!!!!!!!!!!!---------更新
+      user: {},
+      categorys:[],
+    },
+    mounted: function () {
+      
+      //***********当前用户
+      axios.get('/thisUser')
+        .then(res => {
+          this.user = res.data;
+          console.log(this.user);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+        //分类
+      axios.get('/category')
+        .then(res => {
+          this.categorys = res.data;
+          console.log(this.categorys);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+      //分类---书籍列表
+      axios.get('/getbooks')
+        .then(res => {
+          this.books = res.data;
+          console.log(this.books);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+    },
+    methods: {
+
+    },
+  });
+</script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+  integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+  integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>

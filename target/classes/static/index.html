@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- Bootstrap CSS -->
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+<link rel="stylesheet"
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<style>
+* {
+	margin: 0, 0;
+}
+
+/* 容器 */
+.el-header {
+	 background-color: #545c64;
+      color: #ffffff;
+
+	text-align: center;
+	width: 100%;
+	margin: 0px, 0px;
+	padding: 0px, 0px;
+}
+
+.el-footer {
+	background-color: #545c64;
+	color: #333;
+	text-align: center;
+	line-height: 60px;
+	height: 30px;
+}
+
+.el-aside {
+	background-color: #ffffff;
+	color: #333;
+	text-align: center;
+	/*line-height: 200px;*/
+}
+
+.el-main {
+	background-color: #ffffff;
+	text-align: center;
+	margin-top: 0;
+
+	/* line-height: 160px;*/
+}
+
+body>.el-container {
+	margin-bottom: 40px;
+}
+
+/*  走马灯*/
+.el-carousel__item h3 {
+	color: #475669;
+	font-size: 14px;
+	opacity: 0.75;
+	line-height: 200px;
+	margin-top: 10px;
+}
+
+.el-carousel__item:nth-child(2n) {
+	background-color: #f9f9fa;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+	background-color: white;
+}
+
+/*商品列表展示*/
+.taco {
+	width: 90%;
+	font: nomal 12px/1.5 "宋体";
+}
+
+/* .taco .bg04 {} */
+.taco .bg04 ul {
+	list-style: none;
+	margin-left: 3%;
+}
+
+.taco .bg04 ul li {
+	width: 23%;
+	margin-left: 2%;
+	margin-bottom: 2%;
+	float: left;
+}
+
+.taco .bg04 ul li img {
+	width: 80%;
+	height: 90%;
+	background-color: #ffffff;
+}
+
+.taco .bg04 ul li .name {
+	font-size: 2px;
+	text-align: center;
+	color: #333;
+	/* background-color: seashell; */
+}
+
+.dv {
+	margin-top: -0.7%;
+	margin-left: -0.7%;
+	margin-right: -0.76%;
+}
+
+/* div {} */
+.img {
+	width: 100%;
+	height: 40%;
+	background-color: #ffffff;
+}
+
+.form-control {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.428571429;
+	color: #555555;
+	/* vertical-align: middle; */
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out .15s, box-shadow
+		ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.form-inline .form-group {
+	margin-right: 10px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.button {
+	background-color: #4CAF50;
+	/* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
+
+.form-inline .btn {
+	width: auto;
+	height: 34px;
+	padding: 0 8px;
+	font: normal normal 16px/34px "微软雅黑";
+	vertical-align: middle;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	outline-color: skyblue;
+}
+
+.el-dropdown-link {
+	cursor: pointer;
+	color: #409EFF;
+}
+
+.el-icon-arrow-down {
+	font-size: 12px;
+}
+</style>
+<title>共享书屋</title>
+</head>
+
+<body>
+	<div id="app" class="dv">
+		<!--容器-->
+		<el-container> <!--头部--> <el-header
+			style="height:10%; margin:0.5%;"> <!--导航栏--> <el-row>
+		<el-col :span='21'> <el-menu class="el-menu-demo"
+			mode="horizontal" background-color="#545c64"
+      color="#ffffff" 
+			active-text-color="#ffd04b"> <el-menu-item index="1">
+		<a href="/index.html">首页</a></el-menu-item> <el-menu-item index="2"> <el-dropdown>
+		<span class="el-dropdown-link" style="color: #333"> 分类<i
+			class="el-icon-arrow-down el-icon--right"></i>
+		</span> <el-dropdown-menu slot="dropdown">
+		<span v-for="c in categorys" :key="c"> <el-dropdown-item>
+			<a :href="'/category/'+c.category_id">{{c.category_name}}</a></el-dropdown-item>
+		</span> </el-dropdown-menu> </el-dropdown> </el-menu-item> <el-menu-item index="3">
+		<a href="help.html" target="_blank">帮助</a></el-menu-item> </el-menu> </el-col> <!-- 用户状态 --> <el-col
+			:span='3'> <el-menu class="el-menu-demo" mode="horizontal"
+			background-color="#545c64"
+      color="#ffffff"
+> <!-- 未登录时 -->
+		<el-menu-item index="9" v-if="user==''"> <el-link
+			type="success">
+		<a href="/login">[登录]</a></el-link> </el-menu-item> <!-- 已登录时 --> <el-menu-item v-else
+			index="10"> <a href="/mypage/mypage.html"> <el-avatar
+				size="medium" :src="'/'+user.icon"></el-avatar>
+		</a> <a href="/logout" style="color: blue;">退出 </a> </el-menu-item> </el-menu> </el-col> </el-row> </el-header> <!-- LOGO--> <!-- 搜索 -->
+		<el-header style="height:120px; background-color:white">
+		<div style="margin-top: 15px; margin-left: 50px; margin-bottom: 10px;">
+			<img src="imgs/logo.png" alt="logo" style="float: left">
+		</div>
+		<div style="margin-top: 30px; margin-left: 50px; margin-bottom: 10px;">
+			<!-- 表单 -->
+
+			<form action="/search" style="float: left; margin-left: 50px"
+				class="form-inline">
+				<div class="input-group">
+					<input style="float: left; margin-left: 50px; height: 60px;"
+						type="text" v-model="input" name="input" class="form-control"
+						placeholder="书名、作者、分类" size="40" aria-describedby="helpId">
+					<span style="background-color: #4CAF50" class="input-group-addon">
+						<input type="submit" value="搜索" class="button"
+						style="padding: 10px 30px 10px 60px;" size="20" />
+					</span>
+				</div>
+			</form>
+		</div>
+
+		</el-header> <el-container> <!--主要部分################--> <el-main
+			style="width:70% "> <!--书籍展示###走马灯-->
+		<div>
+			<template> <el-carousel :interval="2500" type="card"
+				autoplay=true style="height: 10%"> <el-carousel-item
+				v-for="item in items" :key="item"> <img
+				v-bind:src="item" style="width: 100%; height: 100%" /> </el-carousel-item> </el-carousel> </template>
+		</div>
+		<br>
+		<br>
+		<!--书籍展示 列表-->
+		<div class="taco">
+
+			<div class="bg04">
+				<h4 align="left" style="margin-left: 12%;">
+					<strong>好书热荐</strong>
+				</h4>
+				<hr style="margin-left: 11%;">
+				<!-- 遍历 v-for -->
+				<ul>
+					<li v-for="(list,index) in lists"><a
+						:href="'/book/'+list.book_id"><img :src="list.book_icon"
+							style="height: 230px; width: 160px;" /></a>
+						<div class="name">
+							<el-link type="primary" :href="'/book/'+list.book_id">{{list.book_name}}</el-link>
+							<br />
+							<span>{{list.book_author}}</span>
+						</div></li>
+				</ul>
+			</div>
+		</div>
+		</el-main> <el-container style="border-width:10px;border-left:rgb(194, 60, 7)">
+		<!--右侧--> <el-aside
+			style="width:100%; border-width:10px;border-left:rgb(194, 60, 7)">
+
+
+		<div style="color: red">热门书籍</div>
+		<div v-for="(hot, index) in hots" :key="index">
+			<span><img :src="'/'+hot.book_icon"
+				style="width: 60px; height: 80px;" /> </span><br> <span>《{{hot.book_name}}》</span><br>
+			<br>
+		
+		</div>
+		<br>
+		
+
+		<div style="color: red">评论最多的书籍</div>
+		<div v-for="(com, index) in coms" :key="index">
+			<span>《{{com.book_name}}》</span>
+		</div>
+		<br>
+		
+
+
+		<div style="color: red">收藏最多的书籍</div>
+		<div v-for="(com, index) in coms" :key="index">
+			<span>《{{com.book_name}}》</span>
+		</div>
+
+
+		</el-aside> </el-container> </el-container> <el-footer><footer id="footer">
+			<p class="copyright">
+				Copyright &copy; 2019 洛阳高歌 
+			</p>
+		</footer></el-footer> </el-container>
+		<!-- {{lists}} -->
+	</div>
+
+
+</body>
+
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      // 走马灯的展示内容
+      items: ['imgs/浪潮之巅.png', 'imgs/一个人的朝圣.png', 'imgs/你想活出什么样的人生.png'],
+      lists: [],
+
+      // 搜索内容
+      input: '',
+      //用户!!!!!!!!!!!!!!---------更新
+      user: {},
+      categorys: [],
+      //热门
+      hots: [],
+      //评论最多
+      coms: [],
+      //收藏最多
+      cols: [],
+    },
+    mounted: function () {
+      axios.get('/book/all')
+        .then(res => {
+          this.lists = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+      //***********当前用户
+      axios.get('/thisUser')
+        .then(res => {
+          this.user = res.data;
+          console.log(this.user);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+      //分类
+      axios.get('/category')
+        .then(res => {
+          this.categorys = res.data;
+          console.log(this.categorys);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+      //评论最多
+      axios.get('/booksort')
+        .then(res => {
+          this.coms = res.data;
+          console.log('评论最多');
+          console.log(this.coms);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+      //热门
+      axios.get('/booksorthistory')
+        .then(res => {
+          this.hots = res.data;
+          console.log('热门');
+          console.log(this.hots);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+      //收藏最多
+      axios.get('/booksort')
+        .then(res => {
+          this.cols = res.data;
+          console.log('收藏最多');
+          console.log(this.cols);
+        })
+        .catch(err => {
+          console.log(err);
+        });//*********
+
+    },
+    methods: {
+
+    },
+  });
+</script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+
+</html>

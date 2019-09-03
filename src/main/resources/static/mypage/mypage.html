@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <title>个人中心</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-style.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+
+  </head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+      <!-- Main 主体-->
+        <div id="main">
+          <div class="inner">
+
+            <!-- Header 头部-->
+            <header id="header">
+              <div class="logo">
+                <a href="../index.html">共享书屋</a>
+              </div>
+            </header>
+
+            <!-- Banner信息展示界面 -->
+            <section class="main-banner">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="banner-content">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="banner-caption">
+                            <h4>你好, 这里是 <em>共享书屋</em>主题</h4>
+                            <span>Fall in love at first sight </span>
+                            <p>你知道 <strong>共享书屋</strong> 这是一个由用户自行上传分享的 <strong>阅读中心平台</strong>你可上传、下载书籍，在线阅读评论</p>
+                            <div class="primary-button">
+                              <a href="#">了解更多</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+
+          </div>
+        </div>
+
+      <!-- Sidebar侧边栏，工具条 -->
+        <div id="sidebar">
+
+          <div class="inner">
+
+            <!-- Search Box 搜索框 -->
+            <section id="search" class="alt">
+              <form method="get" action="#">
+                <input type="text" name="search" id="search" placeholder="Search..." />
+              </form>
+            </section>
+              
+            <!-- Menu 左边菜单-->
+            <nav id="menu">
+                <ul>
+                  <li><a href="upload.html">我的上传</a></li>
+                  <li><a href="bookself.html">我的书架</a></li>
+                  <li><a href="myread.html">我的足迹</a></li>
+                  <li><a href="mycomment.html">我的评论</a></li>
+                  <li><a href="myinfo.html">我的资料</a></li>
+                  <li class="nav-item" id="app">
+                      <a href="/updatepwd" class="nav-link" data-toggle="modal"
+                        data-target="#modelId">修改密码</a>
+                    </li>
+      
+                    <!-- Modal -->
+                    <div class="modal fade" id="modelId" tabindex="-1" role="dialog"
+                      aria-labelledby="modelTitleId" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">修改用户密码</h5>
+                          </div>
+                          <div class="modal-body">
+      
+                            <!-- 旧密码 -->
+                            <div class="form-group">
+                              <label for="">旧密码</label>
+                              <input type="password" class="form-control" v-model="oldpwd">
+                            </div>
+      
+                            <!-- 新密码 -->
+                            <div class="form-group">
+                              <label for="">新密码</label>
+                              <input type="password" class="form-control" v-model="pwd1">
+                            </div>
+      
+                            <!-- 再次输入 -->
+                            <div class="form-group">
+                              <label for="">再次输入</label>
+                              <input type="password" class="form-control" v-model="pwd2">
+                            </div>
+      
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">关闭</button>
+                              <button type="button" class="btn btn-primary"
+                                @click="change()">更改</button>
+                            </div>
+      
+                          </div>
+                        </div>
+      
+                      </div>
+      
+                    </div>
+                </ul>
+            </nav>
+
+            <!-- Footer -->
+            <footer id="footer">
+              <p class="copyright">
+                  Copyright &copy; 2019 洛阳高歌 
+              </p>
+          </footer>
+
+          </div>
+        </div>
+
+    </div>
+
+    <script>
+        var vue = new Vue({
+          el: '#app',
+    
+          data: {
+            user: {},
+            oldpwd: '',
+            pwd1: '',
+            pwd2: '',
+            show: '',
+            ss: '',
+          },
+          methods: {
+            //更改密码
+            change: function () {
+              console.log('abc');
+              axios.post('/updatepwd', {
+                oldpwd: this.oldpwd,
+                pwd1: this.pwd1,
+                pwd2: this.pwd2
+              })
+                .then(res => {
+                  console.log(res.data)
+                  if (res.data == 'erropwd') {
+                    alert('原密码输入错误');
+                  }
+    
+                  if (res.data == 'noequal') {
+                    alert('新密码两次不一致');
+                  }
+    
+                  if (res.data == 'ok') {
+                    $('#modelId').modal('hide')
+                  }
+                })
+                .catch(err => {
+                  console.error(err);
+                })
+    
+    
+            },
+    
+    
+          },
+          computed: {
+    
+          },
+          mounted() {
+    
+            //***********当前用户
+            axios.get('/thisUser')
+              .then(res => {
+                this.user = res.data;
+                console.log(this.user);
+              })
+              .catch(err => {
+                console.log(err);
+              });//*********
+    
+            console.log(this.ss);
+    
+          },
+    
+        })
+    
+      </script>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+      <!-- 头像上传 -->
+      <script src="//unpkg.com/vue/dist/vue.js"></script>
+      <script src="//unpkg.com/element-ui@2.11.0/lib/index.js"></script>
+</body>
+
+</html>

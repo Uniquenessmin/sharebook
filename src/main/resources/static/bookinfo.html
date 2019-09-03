@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0, 0;
+
+        }
+
+        /* 容器 */
+        .el-header {
+            background-color: #545c64;
+      color: #ffffff;
+
+            text-align: center;
+            width: 100%;
+            margin: 0px, 0px;
+            padding: 0px, 0px;
+        }
+
+        .el-footer {
+            background-color: #545c64;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+
+            bottom: 0%;
+
+            margin-bottom: 0%;
+
+        }
+
+
+
+        .el-main {
+            background-color: #ffffff;
+            margin-top: 0;
+
+            /* line-height: 160px;*/
+        }
+
+
+        body>.el-container {
+            margin-bottom: 40px;
+        }
+
+        /*  走马灯*/
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 200px;
+            margin-top: 10px;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #f9f9fa;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: white;
+        }
+
+        /*商品列表展示*/
+        .taco {
+
+            width: 90%;
+            font: nomal 12px/1.5 "宋体";
+
+        }
+
+        .taco .bg04 {}
+
+        .taco .bg04 ul {
+            list-style: none;
+            margin-left: 3%;
+        }
+
+        .taco .bg04 ul li {
+            width: 23%;
+
+            margin-left: 2%;
+            margin-bottom: 2%;
+            float: left;
+        }
+
+        .taco .bg04 ul li img {
+            width: 80%;
+            height: 90%;
+            background-color: #ffffff;
+        }
+
+        .taco .bg04 ul li .name {
+            font-size: 2px;
+            text-align: center;
+            color: #333;
+            /* background-color: seashell; */
+        }
+
+
+        .dv {
+            margin-top: -0.7%;
+            margin-left: -0.7%;
+            margin-right: -0.76%;
+
+        }
+
+        div {}
+
+        .img {
+            width: 100%;
+            height: 40%;
+            background-color: #ffffff;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.428571429;
+            color: #555555;
+            vertical-align: middle;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        .form-inline .form-group {
+            margin-right: 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .form-inline .btn {
+            width: auto;
+            height: 34px;
+            padding: 0 8px;
+            font: normal normal 16px/34px "微软雅黑";
+            vertical-align: middle;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            outline-color: skyblue;
+        }
+    </style>
+    <title>共享书屋</title>
+</head>
+
+<body>
+    <div id="app" class="dv">
+        <!--容器-->
+        <el-container style="height: 100%">
+            <!--头部-->
+            <el-header style="height:10%; margin:0.5%;">
+                <!--导航栏-->
+                <el-row>
+                    <el-col :span='21'>
+                        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64"
+      color="#ffffff"
+                        
+                            active-text-color="#ffd04b">
+                            <el-menu-item index="1" ><a href="/index.html">首页</a></el-menu-item>
+                            <el-menu-item index="2">
+                                <el-dropdown>
+                                    <span class="el-dropdown-link" style="color: #333">
+                                        分类<i class="el-icon-arrow-down el-icon--right"></i>
+                                    </span>
+                                    <el-dropdown-menu slot="dropdown"><span v-for="c in categorys" :key="c">
+                                            <el-dropdown-item><a
+                                                    :href="'/category/'+c.category_id">{{c.category_name}}</a>
+                                            </el-dropdown-item>
+                                        </span>
+
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </el-menu-item>
+
+                            <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">帮助</a></el-menu-item>
+                        </el-menu>
+                    </el-col>
+
+                    <!-- 用户状态 -->
+                    <el-col :span='3'>
+                        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64"
+      color="#ffffff"
+>
+                            <!-- 未登录时 -->
+                            <el-menu-item index="9" v-if="user==''">
+                                <el-link type="success"><a href="/login">[登录]</a></el-link>
+                            </el-menu-item>
+
+                            <!-- 已登录时 -->
+                            <el-menu-item v-else index="10">
+                                <a href="/mypage/mypage.html">
+                                    <el-avatar size="medium" :src="'/'+user.icon"></el-avatar>
+                                </a>
+                                <a href="/logout" style=" color:blue;">退出
+                                </a>
+                            </el-menu-item>
+
+                        </el-menu>
+                    </el-col>
+                </el-row>
+            </el-header>
+
+            <!-- LOGO-->
+            <!-- 搜索 -->
+            <el-header style="height:20%; background-color:white">
+                <div style="margin-top: 15px;margin-left: 50px;margin-bottom:10px;">
+                    <img src="../imgs/logo.png" alt="logo" style="float: left">
+                </div>
+                <div style="margin-top: 30px;margin-left: 50px;margin-bottom:10px;">
+                    <!-- 表单 -->
+
+                    <form action="/search" style="float: left;margin-left: 50px" class="form-inline">
+                        <div class="input-group">
+                            <input style="float: left;margin-left: 50px;height: 60px;" type="text" v-model="input" name="input"
+                                class="form-control" placeholder="书名、作者、分类" size="40" aria-describedby="helpId">
+                            <span style="background-color: #4CAF50" class="input-group-addon">
+                                <input type="submit" value="搜索" class="button" style="padding: 10px 30px 10px 60px;"
+                                    size="20" /></span>
+                        </div>
+                    </form>
+                </div>
+
+            </el-header>
+
+            <!--主要部分################-->
+            <el-main style="height: 70% ">
+                <!-- 书名，作者介绍等 -->
+                <div>
+                    <br>
+                    <div class="container">
+                        <h2>{{book.book_name}}</h2><br>
+                        <div class="row">
+                            <div class="col-lg-8 ">
+                                <div class="row">
+                                    <!-- 书的封面 -->
+                                    <div class="col-lg-4">
+                                        <img :src="'/'+book.book_icon" style="width: 170px;height:200px;" />
+                                        <!-- <img src="imgs/一个人的朝圣.jpg" style="width: 170px;height:200px;float:right " /> -->
+
+                                    </div>
+                                    <!-- 作者等其他信息 -->
+                                    <div class="col-lg-8" style="">
+                                        <span>书名：《 {{book.book_name}} 》</span><br>
+                                        <span>作者：{{book.book_author}}</span><br>
+                                        <span>分类：{{cates[book.category-1]}}</span><br>
+                                        <span>ISBN：{{book.book_id}}</span><br>
+                                        <span>上传者：{{book.sharer}}</span><br><br>
+
+                                        <span><a href="/demo" class="btn btn-primary">阅读</a></span>
+                                        <span><button @click="doCollect" type="button"
+                                                class="btn btn-primary">收藏</button></span>
+                                        <br><br><br>
+                                        <!-- 用户做出评分 -->
+                                        <div class="block">
+                                            <span class="demonstration">对此书评分</span>
+                                            <el-rate @change="setScore" v-model="value1 " show-text></el-rate>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 评分 -->
+                            <div class="col-lg-4  " style="border-left-style:solid;border-left-color:lightgray;">
+                                <br>
+                                评分
+                                <el-rate v-model="value" disabled show-score text-color="#ff9900"
+                                    score-template="{value}">
+                                </el-rate>
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br><br>
+                </div>
+                <div class="container">
+                    <!-- 内容简介 -->
+                    <h3 style="margin-top: 15%">内容简介</h3>
+                    <hr>
+                    <span>{{book.describute}}</span>
+                    <!-- 目录 -->
+                    <!-- <h3 style="margin-top: 15%">目录</h3>
+                    <hr>
+                    <span>目录。。。。。</span> -->
+
+
+                    <!-- 对此书评论##文本框 -->
+                    <h3 style="margin-top: 15%">写书评</h3>
+                    <hr>
+                    <div>
+
+                        <!--这是你的评论-->
+                        <textarea name="mytextarea" v-model="mycomm" maxlength="200" class="form-control" rows="5"
+                            placeholder="说点什么吧~"></textarea>
+
+                        <button @click="addComment" type="button" class="btn btn-primary"
+                            style="float: right">评论</button>
+
+                    </div>
+                    <!-- 评论帖子 -->
+                    <h3 style="margin-top: 15%">其他用户的评论</h3>
+                    <hr>
+                    <div v-for="co in comments">
+
+                        <ul class="list-group">
+                            <li class="list-group-item active"><span>用户：{{co.user_id}}</span>
+                                <span style="margin-left: 10%">时间：{{co.date}}</span></li>
+                            <li class="list-group-item">{{co.comment_context}}</li>
+
+                        </ul>
+
+
+
+                        <p class="card-text"></p>
+                    </div>
+
+
+                </div>
+
+
+            </el-main>
+            <el-footer>Footer</el-footer>
+        </el-container>
+
+    </div>
+
+
+</body>
+
+
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            // 本书
+            book: {},
+            //评论列表
+            comments: [],
+            //用户id
+            userid: '',
+            // 评分
+            value: 5,
+            value1: 0,
+            id: '#',
+            user: {},
+            input: '',
+            mycomm: '',//评论
+            collections: [],//收藏
+            cates:['文学','流行','小说','科技','经管']
+
+        },
+        mounted: function () {
+            // 暂时注释！！！！！！！！！！！！
+            // 通过路径获得当前书籍编号
+            // this.id = this.$route.params.id;
+            //console.log(this.id);
+
+            //获得这本书
+            axios.get(`/bookmsg`)
+                .then(res => {
+                    this.book = res.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+
+            //获得评论列表
+            axios.get('/comments', {
+                book_id: this.id,
+            })
+                .then(res => {
+                    this.comments = res.data;
+                    console.log(res)
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            //当前用户
+            axios.get('/thisUser')
+                .then(res => {
+                    this.user = res.data;
+                    console.log(this.user);
+                })
+                .catch(err => {
+                    console.log(err);
+                });//*********
+            //我的评分
+            axios.get('/mymark')
+                .then(res => {
+                    this.value1 = res.data;
+
+                })
+                .catch(err => {
+                    console.log(err);
+                });//*********
+
+            //该书平均分
+            axios.get('/avg')
+                .then(res => {
+                    this.value = res.data.score;
+
+                })
+                .catch(err => {
+                    console.log(err);
+                });//*********
+
+
+
+        },
+        methods: {
+
+            // 设置评分
+            setScore: function () {
+                //1未登录，强制跳转登录
+                //2如果该用户对该书的评分已经存在，更新即可
+                axios.post(`/setmark`, {
+                    book_id: this.book.book_id,  //书编号
+                    user_id: this.user.user_id,
+                    mark_score: this.value1       //评分
+
+                })
+                    .then(res => {
+                        console.log('ok');
+                        urls = res.data.url;
+                        window.location = urls;
+                        this.value1 = res.data.marks;
+                    })
+                    .catch(err => {
+                        console.error('err');
+                    })
+            },
+
+            //添加评论
+            addComment: function () {
+                axios.post('/addcomm', {
+                    book_id: this.book.book_id,
+                    user_id: this.user.user_id,
+                    comment_context: this.mycomm
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        url2 = res.data.url;
+                        window.location = url2;
+
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    })
+            },
+
+            //收藏
+            doCollect: function () {
+                axios.post('/collect', {
+                    user_id: this.user.user_id,
+                    book_id: this.book.book_id
+                })
+                    .then(res => {
+                        url3 = res.data.url;
+                        if (url3 == "/login") {
+                            window.location = url3;
+                        }
+                        alert(res.data.msg);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    })
+            },
+        },
+
+    });
+</script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</html>
